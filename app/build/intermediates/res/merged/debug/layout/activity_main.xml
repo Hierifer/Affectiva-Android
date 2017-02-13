@@ -10,22 +10,71 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.isvogue.myapplication.MainActivity">
 
-    <SurfaceView
+    <TextView
+        android:text="TextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/cameraDetectorSurfaceView"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/graph"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/graph" />
+        android:layout_marginLeft="27dp"
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="46dp"
+        android:id="@+id/joy" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/joy"
+        android:layout_alignLeft="@+id/joy"
+        android:layout_alignStart="@+id/joy"
+        android:layout_marginTop="19dp"
+        android:id="@+id/anger" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:id="@+id/surprise"
+        android:layout_below="@+id/anger"
+        android:layout_alignLeft="@+id/anger"
+        android:layout_alignStart="@+id/anger" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/mean"
+        android:layout_marginTop="26dp"
+        android:layout_below="@+id/surprise"
+        android:layout_alignLeft="@+id/surprise"
+        android:layout_alignStart="@+id/surprise" />
 
     <com.jjoe64.graphview.GraphView
         android:layout_width="match_parent"
         android:layout_height="200dip"
         android:id="@+id/graph"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <SurfaceView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/cameraDetectorSurfaceView"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/Threshold"
+        android:layout_alignTop="@+id/joy" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/Threshold"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignLeft="@+id/mean"
+        android:layout_alignStart="@+id/mean"
+        android:layout_marginBottom="26dp" />
 </RelativeLayout>
