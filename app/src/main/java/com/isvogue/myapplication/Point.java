@@ -1,7 +1,7 @@
 package com.isvogue.myapplication;
 
 /**
- * Created by Hu on 2/12/2017.
+ *  BORING SETUP
  */
 
 public class Point{

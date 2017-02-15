@@ -1,43 +1,48 @@
 package com.isvogue.myapplication;
 
-
+//Basic
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import java.util.List;
 
+//Affectiva
 import com.affectiva.android.affdex.sdk.Frame;
 import com.affectiva.android.affdex.sdk.detector.CameraDetector;
 import com.affectiva.android.affdex.sdk.detector.Face;
 
-import java.util.Random;
-
+//ViewGraph
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
-import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements CameraDetector.CameraEventListener, CameraDetector.ImageListener{
     SurfaceView cameraDetectorSurfaceView;
     CameraDetector cameraDetector;
+
     TextView joytext;
     TextView angertext;
     TextView surprisetext;
     TextView meantext;
     TextView thresholdtext;
 
-    private LineGraphSeries<DataPoint> series;
-    private int lastX = 0;
+    private LineGraphSeries<DataPoint> series;   //current joy line
+    private LineGraphSeries<DataPoint> series2;  // threshold
+    private LineGraphSeries<DataPoint> series3;  // joy mean
 
+    private int lastX = 0;
     int maxProcessingRate = 10;
-    float headjoytime = 0;
+    float headjoytime = 0;  //first timeStamp in Queue
     float threshold = 40;
     float mean;
-    Queue joys = new Queue();
+
+    Queue joys = new Queue(); //Queue
 
     @Override
     public void onImageResults(List<Face> faces, Frame frame, float timeStamp){
@@ -53,15 +58,20 @@ public class MainActivity extends AppCompatActivity implements CameraDetector.Ca
         float anger = face.emotions.getAnger();
         float suprise = face.emotions.getSurprise();
 
+
         if(headjoytime == 0){
-            headjoytime = headjoytime;
+            // init headjoytime
+            headjoytime = timeStamp;
         }
 
+        //dequeue all entries on Queue that timeStamp greater than 15
         while((timeStamp-headjoytime)>15){
+            //drop first and see the next
             joys.dequeue();
             headjoytime = joys.peek();
         }
 
+        //enqueue new entry
         joys.enqueue(new Point(joy, timeStamp));
 
         mean = joys.getMean();
@@ -70,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements CameraDetector.Ca
         System.out.println("Anger: "+anger);
         System.out.println("Surprise: "+suprise);
 
+        // Update text
         joytext.setText("Joy:"+joy);
         angertext.setText("Anger: "+anger);
         surprisetext.setText("Surprise: "+suprise);
@@ -77,10 +88,15 @@ public class MainActivity extends AppCompatActivity implements CameraDetector.Ca
         if(joys.size() > 14) {
             System.out.println("Mean of Joy: " + mean);
             meantext.setText("Mean of Joy: " + mean);
+            // Update Chart
+            addjoy(joy, mean);
         } else {
             System.out.println("#Data is under 15");
             meantext.setText("#Data is under 15");
+            // Update Chart
+            addjoy(joy, 0);
         }
+
         if(mean >= threshold){
             System.out.println("You have reached the threshold");
             thresholdtext.setText("You have reached the threshold");
@@ -99,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements CameraDetector.Ca
         cameraDetectorSurfaceView.setLayoutParams(params);
     }
 
-    GraphView graph;
+    Viewport viewport;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -111,18 +127,29 @@ public class MainActivity extends AppCompatActivity implements CameraDetector.Ca
         meantext = (TextView)findViewById(R.id.mean);
         thresholdtext = (TextView)findViewById(R.id.Threshold);
 
-        // we get graph view instance
-        graph = (GraphView) findViewById(R.id.graph);
-        // data
+        //viewgraph
+        GraphView graph = (GraphView) findViewById(R.id.graph);
+
         series = new LineGraphSeries<DataPoint>();
+        series2 = new LineGraphSeries<DataPoint>();
+        series3 = new LineGraphSeries<DataPoint>();
+
+        series.setColor(Color.BLUE);
+        series2.setColor(Color.GREEN);
+        series3.setColor(Color.BLACK);
+
         graph.addSeries(series);
-        // customize a little bit viewport
-        Viewport viewport = graph.getViewport();
+        graph.addSeries(series2);
+        graph.addSeries(series3);
+
+        viewport = graph.getViewport();
         viewport.setYAxisBoundsManual(true);
+        viewport.setXAxisBoundsManual(true);
+        viewport.setMinX(0);
+        viewport.setMaxX(500);
         viewport.setMinY(0);
         viewport.setMaxY(100);
-        viewport.setScrollable(true);
-
+       // viewport.setScrollable(true);
 
         cameraDetectorSurfaceView=(SurfaceView)findViewById(R.id.cameraDetectorSurfaceView);
         cameraDetector=new CameraDetector(this,CameraDetector.CameraType.CAMERA_FRONT,cameraDetectorSurfaceView);
@@ -137,40 +164,16 @@ public class MainActivity extends AppCompatActivity implements CameraDetector.Ca
         cameraDetector.start();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // we're going to simulate real time with thread that append data to the graph
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                // we add 100 new entries
-                while (true) {
-                    // sleep to slow down the add of entries
-                    try {
-                        Thread.sleep(1200);
-                    } catch (InterruptedException e) {
-                        // manage error ...
-                    }
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            addEntry();
-                        }
-                    });
-                }
+    public void addjoy(final float joy, final float mean){
+        runOnUiThread(new Runnable(){
+            public void run(){
+                double data = joy;
+                double data2 = mean;
+                series.appendData(new DataPoint(lastX++, data), true, 500);
+                series2.appendData(new DataPoint(lastX++, 40), true, 500);
+                series3.appendData(new DataPoint(lastX++, data2), true, 500);
             }
-        }).start();
-    }
-
-    // add random data to graph
-    private void addEntry() {
-        double data = mean;
-        series.appendData(new DataPoint(lastX++, data), true, 15);
-        graph.getViewport().setMaxX(lastX);
-        graph.getViewport().setMinX(lastX- 15);
+        });
     }
 }
 

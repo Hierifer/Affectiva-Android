@@ -1872,7 +1872,7 @@ containing a value of this type.
         public static final int notify_panel_notification_icon_bg=0x7f02005c;
     }
     public static final class id {
-        public static final int Threshold=0x7f0b005d;
+        public static final int Threshold=0x7f0b005c;
         public static final int action0=0x7f0b0061;
         public static final int action_bar=0x7f0b0047;
         public static final int action_bar_activity_content=0x7f0b0000;
@@ -1901,7 +1901,7 @@ containing a value of this type.
         public static final int beginning=0x7f0b001a;
         public static final int bottom=0x7f0b0022;
         public static final int buttonPanel=0x7f0b002e;
-        public static final int cameraDetectorSurfaceView=0x7f0b005c;
+        public static final int cameraDetectorSurfaceView=0x7f0b005d;
         public static final int cancel_action=0x7f0b0062;
         public static final int checkbox=0x7f0b003e;
         public static final int chronometer=0x7f0b006a;
