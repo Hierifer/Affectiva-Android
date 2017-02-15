@@ -1,0 +1,42 @@
+# Dagger
+-dontwarn dagger.internal.codegen.**
+-keep class * {
+	@javax.inject.* *;
+	@dagger.* *;
+	<init>();
+}
+-keep class dagger.** { *; }
+-keep class javax.inject.** { *; }
+-keep class * extends dagger.internal.Binding
+-keep class * extends dagger.internal.ModuleAdapter
+-keep class * extends dagger.internal.StaticInjection
+
+# classes instantiated reflectively by Dagger
+-keep class com.affectiva.android.affdex.sdk.decoder.FrameDecoder$FrameDecoderFactory { *; }
+-keep class com.affectiva.android.affdex.sdk.detector.AffdexFaceJNI { *; }
+-keep class com.affectiva.android.affdex.sdk.detector.AffdexFaceJNIWrapper { *; }
+-keep class com.affectiva.android.affdex.sdk.detector.AssetsHelper { *; }
+-keep class com.affectiva.android.affdex.sdk.detector.BaseProcessor { *; }
+-keep class com.affectiva.android.affdex.sdk.detector.CameraDetector$CameraHelperFactory { *; }
+-keep class com.affectiva.android.affdex.sdk.detector.CameraHelper$CameraFacade { *; }
+-keep class com.affectiva.android.affdex.sdk.detector.CameraHelper$CameraManager { *; }
+-keep class com.affectiva.android.affdex.sdk.detector.FirehoseAgent { *; }
+-keep class com.affectiva.android.affdex.sdk.detector.FrameProcessor { *; }
+-keep class com.affectiva.android.affdex.sdk.detector.FrameRate { *; }
+-keep class com.affectiva.android.affdex.sdk.detector.ImageProcessor { *; }
+-keep class com.affectiva.android.affdex.sdk.detector.LicenseHelper { *; }
+-keep class com.affectiva.android.affdex.sdk.detector.Prefs { *; }
+
+# classes instantiated reflectively in FrameDecoderFactory.create()
+-keep class com.affectiva.android.affdex.sdk.decoder.FrameDecoder$Decoder { FrameDecoder$Decoder(...); }
+-keep class com.affectiva.android.affdex.sdk.decoder.FrameDecoder$FasterDecoder { FrameDecoder$FasterDecoder(...); }
+
+# don't allow renaming of AffdexFaceParams fields; they're referenced in native code
+-keepclassmembernames class com.affectiva.android.affdex.sdk.detector.AffdexFaceParams { *; }
+
+# don't warn about these
+-dontwarn com.fasterxml.jackson.core.JsonFactory
+-dontwarn com.fasterxml.jackson.core.JsonGenerator
+-dontwarn com.fasterxml.jackson.core.JsonParser
+-dontwarn com.fasterxml.jackson.core.JsonToken
+-dontwarn org.apache.commons.logging.**
