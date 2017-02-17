@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements CameraDetector.Ca
     private LineGraphSeries<DataPoint> series2;  // threshold
     private LineGraphSeries<DataPoint> series3;  // joy mean
 
+    final int dataNumber = 300;  // control # of data on graph. Assignment require 15, I prefer 300 for observe the trend of joy
     private int lastX = 0;
     int maxProcessingRate = 10;
     float headjoytime = 0;  //first timeStamp in Queue
@@ -79,6 +80,8 @@ public class MainActivity extends AppCompatActivity implements CameraDetector.Ca
         System.out.println("Joy: "+joy);
         System.out.println("Anger: "+anger);
         System.out.println("Surprise: "+suprise);
+        System.out.println("Time: "+timeStamp);
+
 
         // Update text
         joytext.setText("Joy:"+joy);
@@ -146,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements CameraDetector.Ca
         viewport.setYAxisBoundsManual(true);
         viewport.setXAxisBoundsManual(true);
         viewport.setMinX(0);
-        viewport.setMaxX(500);
+        viewport.setMaxX(dataNumber);
         viewport.setMinY(0);
         viewport.setMaxY(100);
        // viewport.setScrollable(true);
@@ -169,9 +172,9 @@ public class MainActivity extends AppCompatActivity implements CameraDetector.Ca
             public void run(){
                 double data = joy;
                 double data2 = mean;
-                series.appendData(new DataPoint(lastX++, data), true, 500);
-                series2.appendData(new DataPoint(lastX++, 40), true, 500);
-                series3.appendData(new DataPoint(lastX++, data2), true, 500);
+                series.appendData(new DataPoint(lastX++, data), true, dataNumber);
+                series2.appendData(new DataPoint(lastX++, 40), true, dataNumber);
+                series3.appendData(new DataPoint(lastX++, data2), true, dataNumber);
             }
         });
     }
